@@ -4,15 +4,27 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  interface Comment {
+    id: number;
+    name: string;
+    email: string;
+    body: string;
+  }
 
+  const [count, setCount] = useState(0);
+  const [comments, setComments] = useState<Comment[]>([]);
+  //getting this :- https://jsonplaceholder.typicode.com/
   const apiURL = "https://jsonplaceholder.typicode.com/comments";
 
   const fetchData = async () => {
-    const responce = await fetch(apiURL);
+    try {
+      const responce = await fetch(apiURL);
 
-    const data = responce.json();
-    console.log(data);
+      const data = await responce.json();
+      setComments(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -21,6 +33,16 @@ function App() {
 
   return (
     <>
+      <div>
+        <h1> Comments...</h1>
+        {comments.map((comment: Comment) => (
+          <div key={comment.id}>
+            <h3>{comment.name}</h3>
+            <p>{comment.email}</p>
+            <p>{comment.body}</p>
+          </div>
+        ))}
+      </div>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
