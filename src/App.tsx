@@ -18,10 +18,19 @@ function App() {
 
   const fetchData = async () => {
     try {
+      // Check if cache the data already
+      const cachedData = localStorage.getItem("comments");
+      if (cachedData) {
+        setComments(JSON.parse(cachedData));
+      }
+
       const responce = await fetch(apiURL);
 
       const data = await responce.json();
-      setComments(data);
+      const sliceData = data.slice(0, 30);
+      // store data locally
+      localStorage.setItem("comments", JSON.stringify(sliceData));
+      setComments(sliceData);
     } catch (error) {
       console.log(error);
     }
